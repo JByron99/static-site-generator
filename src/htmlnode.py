@@ -41,3 +41,29 @@ class LeafNode(HTMLNode):
 
         return start + self.value + end
 
+class ParentNode(HTMLNode):
+    def __init__(self, tag=None, children=None, props=None):
+        if children == None:
+            raise ValueError("parent nodes must have children")
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        if self.tag == None:
+            raise ValueError("tag attribute cannot be empty")
+        if self.children == None:
+            raise ValueError("parent nodes must have children")
+        
+        # Adding first parent node tag
+        html_string = f"<{self.tag}"
+        if self.props != None:
+            html_string += " " + self.props_to_html()
+        html_string += ">"
+        
+        # Recursively call to_html for each child node
+        for child in self.children:
+            html_string += child.to_html()
+
+        html_string += f"</{self.tag}>"
+
+        return html_string
+

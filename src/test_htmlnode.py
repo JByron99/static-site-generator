@@ -51,3 +51,51 @@ class TestLeafNode(unittest.TestCase):
         target_html = "<a href=\"https://www.google.com\">Click me!</a>"
         self.assertEqual(a_leaf.to_html(), target_html)
 
+
+class TestParentNode(unittest.TestCase):
+    def test_example_parent(self):
+        target_html = "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
+        example_parent = ParentNode(
+                "p",
+                [
+                    LeafNode("b", "Bold text"),
+                    LeafNode(None, "Normal text"),
+                    LeafNode("i", "italic text"),
+                    LeafNode(None, "Normal text")
+                ],
+            )
+        self.assertEqual(example_parent.to_html(), target_html)
+
+    def test_invalid_parent(self):
+        try:
+            node = ParentNode()
+        except ValueError as v:
+            self.assertNotEqual(str(v), "tag attribute cannot be empty")
+            self.assertEqual(str(v), "parent nodes must have children")
+            return
+        self.assertTrue(False)
+
+    def test_no_tag_to_html(self):
+        try:
+            node = ParentNode(children=[LeafNode(None, "Normal text")])
+            invalid_html = node.to_html()
+        except ValueError as v:
+            self.assertEqual(str(v), "tag attribute cannot be empty")
+            self.assertNotEqual(str(v), "parent nodes must have children")
+            return
+        self.assertTrue(False)
+    
+    def test_nested_parent(self):
+        nested_parent = ParentNode(
+                "html",
+                [
+                    ParentNode(
+                        "body",
+                        [LeafNode("p", "Red text", {"color":"red"})],
+                        )
+                ],
+            )
+        target_html = "<html><body><p color=\"red\">Red text</p></body></html>"
+
+        self.assertEqual(nested_parent.to_html(), target_html)
+
