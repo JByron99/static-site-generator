@@ -99,3 +99,6 @@ class TestParentNode(unittest.TestCase):
 
         self.assertEqual(nested_parent.to_html(), target_html)
 
+if __name__ == "__main__":
+    unittest.main()
+
